@@ -10,7 +10,7 @@ add_executable(conformance_bruteforce
     reference_math.c
     ternary.c 	unary.c 	unary_two_results.c
     unary_two_results_i.c unary_u.c
-    
+
     ../../test_common/harness/rounding_mode.c
     ../../test_common/harness/ThreadPool.c
     ../../test_common/harness/mt19937.c
@@ -49,7 +49,7 @@ set_source_files_properties(
 	PROPERTIES LANGUAGE CXX)
 endif(MSVC)
 
-if (NOT CMAKE_CL_64 AND NOT MSVC)
+if (NOT CMAKE_CL_64 AND NOT MSVC AND NOT "${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 set_source_files_properties(
     FunctionList.c
     Sleep.c
@@ -65,13 +65,19 @@ set_source_files_properties(
     ../../test_common/harness/ThreadPool.c
     ../../test_common/harness/msvc9.c
 	COMPILE_FLAGS -march=i686)
-endif(NOT CMAKE_CL_64 AND NOT MSVC)
+endif(NOT CMAKE_CL_64 AND NOT MSVC AND NOT "${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 
 if(CMAKE_COMPILER_IS_GNUCC)
 set_source_files_properties(
         reference_math_fma.c
         COMPILE_FLAGS -O0)
 endif(CMAKE_COMPILER_IS_GNUCC)
+
+if (ANDROID OR UNIX)
+    if (NOT APPLE)
+        list(APPEND CLConform_LIBRARIES m)
+    endif(NOT APPLE)
+endif(ANDROID OR UNIX)
 
 TARGET_LINK_LIBRARIES(conformance_bruteforce
     ${CLConform_LIBRARIES})
