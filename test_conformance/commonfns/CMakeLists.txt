@@ -1,4 +1,4 @@
-add_executable(conformance_test_commonfns
+add_executable(test_commonfns
         main.c test_clamp.c test_degrees.c
 	test_max.c test_maxf.c test_min.c test_minf.c
         test_mix.c test_radians.c test_step.c test_stepf.c
@@ -28,5 +28,5 @@ set_source_files_properties(
     ../../test_common/harness/msvc9.c    
     PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_commonfns
+TARGET_LINK_LIBRARIES(test_commonfns
         ${CLConform_LIBRARIES})

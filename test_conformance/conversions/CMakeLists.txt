@@ -7,7 +7,7 @@ set(CMAKE_C_FLAGS_RELEASE "-O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-O0")
 endif(MSVC)
 
-add_executable(conformance_test_conversions
+add_executable(test_conversions
         Sleep.c test_conversions.c basic_test_conversions.c
         ../../test_common/harness/ThreadPool.c
         ../../test_common/harness/rounding_mode.c
@@ -56,5 +56,5 @@ if (ANDROID OR UNIX)
     endif(NOT APPLE)
 endif(ANDROID OR UNIX)
 
-TARGET_LINK_LIBRARIES(conformance_test_conversions
+TARGET_LINK_LIBRARIES(test_conversions
         ${CLConform_LIBRARIES})

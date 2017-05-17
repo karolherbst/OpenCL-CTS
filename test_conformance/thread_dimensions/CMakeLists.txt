@@ -1,4 +1,4 @@
-add_executable(conformance_test_thread_dimensions
+add_executable(test_thread_dimensions
         main.c
 	test_thread_dimensions.c
 	../../test_common/harness/errorHelpers.c
@@ -26,5 +26,5 @@ set_source_files_properties(
     ../../test_common/harness/msvc9.c
         PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_thread_dimensions
+TARGET_LINK_LIBRARIES(test_thread_dimensions
         ${CLConform_LIBRARIES})

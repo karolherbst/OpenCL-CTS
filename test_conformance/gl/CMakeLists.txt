@@ -66,12 +66,12 @@ if (MSVC)
     endif(CMAKE_CL_64)
 endif(MSVC)
 
-add_executable(conformance_test_gl
+add_executable(test_gl
         ${GL_SOURCES} ${GLUT_SOURCES})
 
 set_source_files_properties(
         ${GL_SOURCES}
         PROPERTIES LANGUAGE CXX)
         
-TARGET_LINK_LIBRARIES(conformance_test_gl
+TARGET_LINK_LIBRARIES(test_gl
         ${CLConform_LIBRARIES})

@@ -1,4 +1,4 @@
-add_executable(conformance_test_events
+add_executable(test_events
         main.c
 	test_events.cpp
 	test_event_dependencies.cpp
@@ -35,5 +35,5 @@ set_source_files_properties(
    	../../test_common/harness/ThreadPool.c
         PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_events
+TARGET_LINK_LIBRARIES(test_events
         ${CLConform_LIBRARIES})

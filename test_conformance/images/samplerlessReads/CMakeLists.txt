@@ -1,4 +1,4 @@
-add_executable(conformance_test_samplerless_reads
+add_executable(test_samplerless_reads
         main.cpp  
 		test_iterations.cpp  
 		test_loops.cpp  
@@ -39,6 +39,6 @@ set_source_files_properties(
 		../../../test_common/harness/msvc9.c  
         PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_samplerless_reads
+TARGET_LINK_LIBRARIES(test_samplerless_reads
         ${CLConform_LIBRARIES})
 

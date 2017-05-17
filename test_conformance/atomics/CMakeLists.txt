@@ -1,4 +1,4 @@
-add_executable(conformance_test_atomics
+add_executable(test_atomics
         main.c
         test_atomics.cpp
         test_indexed_cases.c
@@ -24,5 +24,5 @@ set_source_files_properties(
         ../../test_common/harness/msvc9.c
         PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_atomics
+TARGET_LINK_LIBRARIES(test_atomics
         ${CLConform_LIBRARIES})

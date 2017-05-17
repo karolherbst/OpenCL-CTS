@@ -21,12 +21,12 @@ set (MEDIA_SOURCES
         ../../test_common/harness/mt19937.c
     )
 
-add_executable(conformance_test_media_surface_sharing
+add_executable(test_media_surface_sharing
         ${MEDIA_SOURCES})
 
 set_source_files_properties(
         ${MEDIA_SOURCES}
         PROPERTIES LANGUAGE CXX)
         
-TARGET_LINK_LIBRARIES(conformance_test_media_surface_sharing
+TARGET_LINK_LIBRARIES(test_media_surface_sharing
         ${CLConform_LIBRARIES})

@@ -1,4 +1,4 @@
-add_executable(conformance_test_relationals 
+add_executable(test_relationals 
         main.c
 	test_relationals.cpp
     test_comparisons_float.cpp
@@ -31,5 +31,5 @@ set_source_files_properties(
     ../../test_common/harness/msvc9.c
         PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_relationals
+TARGET_LINK_LIBRARIES(test_relationals
         ${CLConform_LIBRARIES})

@@ -1,4 +1,4 @@
-add_executable(conformance_test_kernel_image_methods
+add_executable(test_kernel_image_methods
         main.cpp  
         test_1D.cpp
         test_1D_array.cpp
@@ -37,5 +37,5 @@ set_source_files_properties(
           ../../../test_common/harness/msvc9.c
         PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_kernel_image_methods
+TARGET_LINK_LIBRARIES(test_kernel_image_methods
         ${CLConform_LIBRARIES})

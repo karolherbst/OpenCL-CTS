@@ -1,4 +1,4 @@
-add_executable(conformance_test_cl_read_write_images
+add_executable(test_cl_read_write_images
         main.cpp  
     test_read_1D.cpp
     test_read_1D_array.cpp
@@ -37,5 +37,5 @@ set_source_files_properties(
           ../../../test_common/harness/msvc9.c
         PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_cl_read_write_images
+TARGET_LINK_LIBRARIES(test_cl_read_write_images
         ${CLConform_LIBRARIES})

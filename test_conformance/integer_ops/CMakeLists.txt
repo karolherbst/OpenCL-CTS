@@ -1,4 +1,4 @@
-add_executable(conformance_test_integer_ops
+add_executable(test_integer_ops
         main.c
 	test_int_basic_ops.c
 	test_integers.cpp
@@ -56,5 +56,5 @@ set_source_files_properties(
          COMPILE_FLAGS -march=i686)
 endif (NOT CMAKE_CL_64 AND NOT MSVC AND NOT "${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 
-TARGET_LINK_LIBRARIES(conformance_test_integer_ops
+TARGET_LINK_LIBRARIES(test_integer_ops
         ${CLConform_LIBRARIES})

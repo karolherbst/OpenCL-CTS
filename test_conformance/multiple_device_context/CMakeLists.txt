@@ -1,4 +1,4 @@
-add_executable(conformance_test_multiples
+add_executable(test_multiples
         main.c
 	test_multiple_contexts.c
 	test_multiple_devices.cpp
@@ -28,5 +28,5 @@ set_source_files_properties(
     ../../test_common/harness/msvc9.c
         PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_multiples
+TARGET_LINK_LIBRARIES(test_multiples
         ${CLConform_LIBRARIES})

@@ -1,4 +1,4 @@
-add_executable(conformance_test_image_streams
+add_executable(test_image_streams
         main.cpp  
 		test_iterations.cpp  
 		../image_helpers.cpp   
@@ -47,5 +47,5 @@ set_source_files_properties(
           ../../../test_common/harness/msvc9.c  
         PROPERTIES LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(conformance_test_image_streams
+TARGET_LINK_LIBRARIES(test_image_streams
         ${CLConform_LIBRARIES})
