@@ -1,0 +1,25 @@
+# Set the prefix and suffix for the generated executables
+# For example, if you want the api executable to be test_conformance_api_12
+# Set previx to "test_conformance_" and suffix to "_12"
+set(CONFORMANCE_PREFIX "test_" )
+set(CONFORMNACE_SUFFIX "" )
+
+# Include cmake files to build driver
+# to build driver as a dependency of tests
+# in this example environment variable $OPENCL_DRIVER points to driver base
+# Ex  include($ENV{OPENCL_DRIVER}/driver.cmake)
+
+# We intentionally hardcode "_win32" to ensure backwards compatibility (to avoid breaking HAAVE)
+if(ANDROID)
+   if(ARM64_V8A)
+       set(ARCH "64")
+   else(ARM64_V8A)
+       set(ARCH "32")
+   endif(ARM64_V8A)
+endif (ANDROID)
+
+#Use the FindOpenCL.cmake from clBLAS to auto-find the opencl runtime/headers
+find_package( OpenCL REQUIRED)
+set (CL_INCLUDE_DIR "${OPENCL_INCLUDE_DIRS}")
+get_filename_component(CL_LIB_DIR "${OPENCL_LIBRARIES}" DIRECTORY)
+
