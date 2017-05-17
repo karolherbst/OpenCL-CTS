@@ -1,6 +1,9 @@
 add_executable(conformance_test_kernel_image_methods
         main.cpp  
+        test_1D.cpp
+        test_1D_array.cpp
 		test_2D.cpp  
+        test_2D_array.cpp
 		../image_helpers.cpp   
 		test_loops.cpp  
 		test_3D.cpp  
@@ -17,7 +20,10 @@ add_executable(conformance_test_kernel_image_methods
 
 set_source_files_properties(
         main.cpp  
+        test_1D.cpp
+        test_1D_array.cpp
 		test_2D.cpp  
+        test_2D_array.cpp
 		../image_helpers.cpp   
 		test_loops.cpp  
 		test_3D.cpp  

@@ -3,8 +3,14 @@ add_executable(conformance_test_image_streams
 		test_iterations.cpp  
 		../image_helpers.cpp   
 		test_loops.cpp  
+    test_read_1D.cpp
+    test_read_1D_array.cpp
+    test_read_2D_array.cpp
 		test_write_image.cpp  
 		test_read_3D.cpp  
+    test_write_1D.cpp
+    test_write_1D_array.cpp
+    test_write_2D_array.cpp
         test_write_3D.cpp
 		  ../../../test_common/harness/errorHelpers.c  
 		  ../../../test_common/harness/threadTesting.c  
@@ -22,8 +28,14 @@ set_source_files_properties(
 		test_iterations.cpp  
 		../image_helpers.cpp   
 		test_loops.cpp  
+    test_read_1D.cpp
+    test_read_1D_array.cpp
+    test_read_2D_array.cpp
 		test_write_image.cpp  
 		test_read_3D.cpp  
+    test_write_1D.cpp
+    test_write_1D_array.cpp
+    test_write_2D_array.cpp
         test_write_3D.cpp
 		  ../../../test_common/harness/errorHelpers.c  
 		  ../../../test_common/harness/threadTesting.c  

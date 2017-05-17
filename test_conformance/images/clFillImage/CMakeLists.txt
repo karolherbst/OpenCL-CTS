@@ -1,7 +1,11 @@
 add_executable(conformance_test_cl_fill_images
         main.cpp 
+        test_fill_1D.cpp
+        test_fill_1D_array.cpp
 		test_fill_2D.cpp 
+        test_fill_2D_array.cpp
 		../image_helpers.cpp  
+        test_fill_generic.cpp
 		test_loops.cpp 
 		test_fill_3D.cpp 
 #		test_fill_2D_3D.cpp 
@@ -17,8 +21,12 @@ add_executable(conformance_test_cl_fill_images
 
 set_source_files_properties(
         main.cpp 
+        test_fill_1D.cpp
+        test_fill_1D_array.cpp
 		test_fill_2D.cpp 
+        test_fill_2D_array.cpp
 		../image_helpers.cpp  
+        test_fill_generic.cpp
 		test_loops.cpp 
 		test_fill_3D.cpp 
 #		test_fill_2D_3D.cpp 
