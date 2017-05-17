@@ -14,5 +14,13 @@ set_source_files_properties(
         ../../test_common/harness/msvc9.c
         PROPERTIES LANGUAGE CXX)
 endif(MSVC)
+
+if (ANDROID OR UNIX)
+    if (NOT APPLE)
+        list(APPEND CLConform_LIBRARIES m)
+    endif(NOT APPLE)
+endif(ANDROID OR UNIX)
+
+
 TARGET_LINK_LIBRARIES(conformance_Test_half
         ${CLConform_LIBRARIES})

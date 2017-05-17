@@ -15,6 +15,9 @@ add_executable(conformance_test_api
          test_create_context_from_type.cpp
          test_device_min_data_type_align_size_alignment.cpp
          test_platform.cpp
+         test_kernel_arg_info.c
+         test_null_buffer_arg.c
+         test_mem_object_info.cpp
          ../../test_common/harness/errorHelpers.c
          ../../test_common/harness/threadTesting.c
          ../../test_common/harness/testHarness.c
@@ -23,6 +26,7 @@ add_executable(conformance_test_api
          ../../test_common/harness/conversions.c
          ../../test_common/harness/mt19937.c
          ../../test_common/harness/msvc9.c
+         ../../test_common/harness/imageHelpers.cpp
 )
 
 set_source_files_properties(
@@ -38,6 +42,9 @@ set_source_files_properties(
          test_create_context_from_type.cpp
          test_device_min_data_type_align_size_alignment.cpp
          test_platform.cpp
+         test_kernel_arg_info.c
+         test_null_buffer_arg.c
+         test_mem_object_info.cpp
          ../../test_common/harness/errorHelpers.c
          ../../test_common/harness/threadTesting.c
          ../../test_common/harness/testHarness.c
@@ -45,6 +52,7 @@ set_source_files_properties(
          ../../test_common/harness/conversions.c
          ../../test_common/harness/mt19937.c
          ../../test_common/harness/msvc9.c
+         ../../test_common/harness/imageHelpers.cpp
         PROPERTIES LANGUAGE CXX)
 
 TARGET_LINK_LIBRARIES(conformance_test_api

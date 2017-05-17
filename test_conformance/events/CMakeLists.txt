@@ -16,6 +16,7 @@ add_executable(conformance_test_events
 	../../test_common/harness/mt19937.c
 	../../test_common/harness/conversions.c
    	../../test_common/harness/msvc9.c
+   	../../test_common/harness/ThreadPool.c
 )
 
 set_source_files_properties(
@@ -31,6 +32,7 @@ set_source_files_properties(
 	../../test_common/harness/kernelHelpers.c
 	../../test_common/harness/conversions.c
     	../../test_common/harness/msvc9.c
+   	../../test_common/harness/ThreadPool.c
         PROPERTIES LANGUAGE CXX)
 
 TARGET_LINK_LIBRARIES(conformance_test_events

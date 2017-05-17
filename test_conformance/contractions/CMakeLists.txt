@@ -21,5 +21,11 @@ set_source_files_properties(
         PROPERTIES LANGUAGE CXX)
 endif(WIN32)
 
+if (ANDROID OR UNIX)
+    if (NOT APPLE)
+        list(APPEND CLConform_LIBRARIES m)
+    endif(NOT APPLE)
+endif(ANDROID OR UNIX)
+
 TARGET_LINK_LIBRARIES(conformance_contractions
         ${CLConform_LIBRARIES})
