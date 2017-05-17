@@ -6,7 +6,8 @@ add_executable(conformance_bruteforce
     Utility.c
     binary_i.c 	binary_two_results_i.c 	i_unary.c
     macro_binary.c 	macro_unary.c 	mad.c
-    main.c 	reference_math_fma.c  reference_math.c 
+    main.c 	#reference_math_fma.c 
+    reference_math.c
     ternary.c 	unary.c 	unary_two_results.c
     unary_two_results_i.c unary_u.c
     
