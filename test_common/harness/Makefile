@@ -25,6 +25,7 @@ HEADERS =
 INCLUDE = 
 COMPILERFLAGS = -c -Wall -g -Wshorten-64-to-32
 CC = c++
+CXX = c++
 CFLAGS = $(COMPILERFLAGS) ${RC_CFLAGS} ${USE_ATF} $(DEFINES:%=-D%) $(INCLUDE)
 CXXFLAGS = $(COMPILERFLAGS) ${RC_CFLAGS} ${USE_ATF} $(DEFINES:%=-D%) $(INCLUDE)
 LIBRARIES = -framework OpenCL -framework OpenGL -framework GLUT -framework AppKit ${ATF}
