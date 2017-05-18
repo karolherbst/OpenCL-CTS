@@ -49,6 +49,8 @@ def get_tests(filename, devices_to_test):
   sys.exit(-1)
  file = open(filename, 'r')
  for line in file.readlines():
+  #Files are stored in DOS format. If we're on *nix, strip the trailing CR
+  line = line.replace('\r', '');
   comment = re.search("^#.*", line)
   if (comment):
    continue
