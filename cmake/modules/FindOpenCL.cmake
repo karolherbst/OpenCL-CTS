@@ -65,7 +65,7 @@ get_property( LIB64 GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS )
 
 if( LIB64 )
     find_library( OPENCL_LIBRARIES
-        NAMES OpenCL
+        NAMES OpenCL cl
         HINTS
             ${OPENCL_ROOT}/lib
             $ENV{AMDAPPSDKROOT}/lib
@@ -74,10 +74,11 @@ if( LIB64 )
         PATH_SUFFIXES x86_64 x64
         PATHS
             /usr/lib
+            ${CL_LIB_DIR}
     )
 else( )
     find_library( OPENCL_LIBRARIES
-        NAMES OpenCL
+        NAMES OpenCL cl
         HINTS
             ${OPENCL_ROOT}/lib
             $ENV{AMDAPPSDKROOT}/lib
@@ -86,6 +87,7 @@ else( )
         PATH_SUFFIXES x86 Win32
         PATHS
             /usr/lib
+            ${CL_LIB_DIR}
     )
 endif( )
 mark_as_advanced( OPENCL_LIBRARIES )
