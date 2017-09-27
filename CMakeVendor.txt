@@ -2,7 +2,7 @@
 # For example, if you want the api executable to be test_conformance_api_12
 # Set previx to "test_conformance_" and suffix to "_12"
 set(CONFORMANCE_PREFIX "test_" )
-set(CONFORMNACE_SUFFIX "" )
+set(CONFORMANCE_SUFFIX "" )
 
 # Include cmake files to build driver
 # to build driver as a dependency of tests
