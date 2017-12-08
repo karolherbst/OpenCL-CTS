@@ -95,8 +95,10 @@ verify_sign(float *inptr, float *outptr, int n)
       r = -1.0f;
     else
       r = 0.0f;
-    if (r != outptr[i])
+    if (r != outptr[i]) {
+      printf("%i: %x != %x input: %x\n", i, (uint32_t)r, outptr[i], (uint32_t)inptr[i]);
       return -1;
+    }
   }
   
   return 0;
@@ -309,8 +311,10 @@ verify_sign_double(double *inptr, double *outptr, int n)
       r = -1.0;
     else
       r = 0.0f;
-    if (r != outptr[i])
+    if (r != outptr[i]) {
+      printf("%i: %e != %e input: %e\n", i, r, outptr[i], inptr[i]);
       return -1;
+    }
   }
   
   return 0;

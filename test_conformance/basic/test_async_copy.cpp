@@ -41,7 +41,7 @@ static const char *async_global_to_local_kernel =
 // Do this to verify all kernels are done zeroing the local buffer before we try the copy
 "	barrier( CLK_LOCAL_MEM_FENCE );\n"
 "	event_t event;\n"
-"	event = async_work_group_copy( (__local %s*)localBuffer, (__global const %s*)(src+copiesPerWorkgroup*get_group_id(0)), (size_t)copiesPerWorkgroup, (event_t)0 );\n"
+"	event = async_work_group_copy( (__local %s*)localBuffer, (__global const %s*)(src+copiesPerWorkgroup*get_group_id(0)), (size_t)copiesPerWorkgroup, 0 );\n"
 // Wait for the copy to complete, then verify by manually copying to the dest
 "	wait_group_events( 1, &event );\n"
 " for(i=0; i<copiesPerWorkItem; i++)\n"
@@ -63,7 +63,7 @@ static const char *async_local_to_global_kernel =
 // Do this to verify all kernels are done copying to the local buffer before we try the copy
 "	barrier( CLK_LOCAL_MEM_FENCE );\n"
 "	event_t event;\n"
-"	event = async_work_group_copy((__global %s*)(dst+copiesPerWorkgroup*get_group_id(0)), (__local const %s*)localBuffer, (size_t)copiesPerWorkgroup, (event_t)0 );\n"
+"	event = async_work_group_copy((__global %s*)(dst+copiesPerWorkgroup*get_group_id(0)), (__local const %s*)localBuffer, (size_t)copiesPerWorkgroup, 0 );\n"
 "	wait_group_events( 1, &event );\n"
 "}\n" ;
 
