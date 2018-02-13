@@ -73,7 +73,7 @@ verify_long_add(cl_long *inptrA, cl_long *inptrB, cl_long *outptr, int n)
         r = inptrA[i] + inptrB[i];
         if (r != outptr[i])
         {
-            log_error("LONG_ADD int test failed\n");
+            log_error("LONG_ADD int test failed %i %llx != %llx\n", i, r, outptr[i]);
             return -1;
         }
     }

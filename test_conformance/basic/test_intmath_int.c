@@ -73,7 +73,7 @@ verify_int_add(int *inptrA, int *inptrB, int *outptr, int n)
         r = inptrA[i] + inptrB[i];
         if (r != outptr[i])
         {
-            log_error("INT_ADD int test failed\n");
+            log_error("INT_ADD int test failed %i %x %x\n", i, r, outptr[i]);
             return -1;
         }
     }
