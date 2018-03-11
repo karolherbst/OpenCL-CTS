@@ -86,8 +86,6 @@ basefn    basefn_list[] = {
 
     test_program_binary_type,
     test_compile_and_link_status_options_log,
-
-    test_pragma_unroll
 };
 
 
@@ -152,8 +150,6 @@ const char    *basefn_names[] = {
     "multiple_embedded_headers",
     "program_binary_type",
     "compile_and_link_status_options_log",
-
-    "pragma_unroll",
 };
 
 ct_assert((sizeof(basefn_names) / sizeof(basefn_names[0])) == (sizeof(basefn_list) / sizeof(basefn_list[0])));

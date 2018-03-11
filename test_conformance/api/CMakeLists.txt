@@ -20,10 +20,6 @@ set(${MODULE_NAME}_SOURCES
          test_kernel_arg_info.c
          test_null_buffer_arg.c
          test_mem_object_info.cpp
-         test_queue_hint.cpp
-         test_sub_group_dispatch.cpp
-         test_clone_kernel.cpp
-         test_zero_sized_enqueue.cpp
          ../../test_common/harness/errorHelpers.c
          ../../test_common/harness/threadTesting.c
          ../../test_common/harness/testHarness.c

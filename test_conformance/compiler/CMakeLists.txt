@@ -9,7 +9,6 @@ set(${MODULE_NAME}_SOURCES
     test_preprocessor.c
     test_image_macro.c
     test_compiler_defines_for_extensions.cpp
-    test_pragma_unroll.c
     ../../test_common/harness/errorHelpers.c
     ../../test_common/harness/threadTesting.c
     ../../test_common/harness/testHarness.c

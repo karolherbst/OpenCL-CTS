@@ -58,7 +58,6 @@ enum
     type_size_t_arr,
     type_cl_ulong,
     type_string,
-    type_cl_device_svm_capabilities,
 };
 
 typedef union
@@ -76,7 +75,6 @@ typedef union
     size_t                          sizet_arr[3];
     cl_ulong                        ull;
     char                            string[1024];
-    cl_device_svm_capabilities      svmCapabilities;
 } config_data;
 
 struct _version {
@@ -153,7 +151,6 @@ config_info config_infos[] =
     CONFIG_INFO( 1, 1, CL_DEVICE_ADDRESS_BITS, cl_uint),
     CONFIG_INFO( 1, 1, CL_DEVICE_MAX_READ_IMAGE_ARGS, cl_uint),
     CONFIG_INFO( 1, 1, CL_DEVICE_MAX_WRITE_IMAGE_ARGS, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_MAX_READ_WRITE_IMAGE_ARGS, cl_uint),
     CONFIG_INFO( 1, 1, CL_DEVICE_MAX_MEM_ALLOC_SIZE, cl_ulong),
     CONFIG_INFO( 1, 1, CL_DEVICE_IMAGE2D_MAX_WIDTH, size_t),
     CONFIG_INFO( 1, 1, CL_DEVICE_IMAGE2D_MAX_HEIGHT, size_t),
@@ -165,8 +162,6 @@ config_info config_infos[] =
     CONFIG_INFO( 1, 1, CL_DEVICE_IMAGE_SUPPORT, cl_uint),
     CONFIG_INFO( 1, 1, CL_DEVICE_MAX_PARAMETER_SIZE, size_t),
     CONFIG_INFO( 1, 1, CL_DEVICE_MAX_SAMPLERS, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_IMAGE_PITCH_ALIGNMENT, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT, cl_uint),
 
     CONFIG_INFO( 1, 1, CL_DEVICE_MEM_BASE_ADDR_ALIGN, cl_uint),
     CONFIG_INFO( 1, 1, CL_DEVICE_SINGLE_FP_CONFIG, cl_device_fp_config),
@@ -207,26 +202,6 @@ config_info config_infos[] =
     CONFIG_INFO( 1, 1, CL_DEVICE_VERSION, string),
     CONFIG_INFO( 1, 1, CL_DEVICE_OPENCL_C_VERSION, string),
     CONFIG_INFO( 1, 1, CL_DEVICE_EXTENSIONS, string),
-
-    CONFIG_INFO( 2, 0, CL_DEVICE_MAX_PIPE_ARGS, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_PIPE_MAX_PACKET_SIZE, cl_uint),
-
-    CONFIG_INFO( 2, 0, CL_DEVICE_MAX_GLOBAL_VARIABLE_SIZE, size_t),
-    CONFIG_INFO( 2, 0, CL_DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE, size_t),
-
-    CONFIG_INFO( 2, 0, CL_DEVICE_QUEUE_ON_HOST_PROPERTIES, cl_command_queue_properties),
-    CONFIG_INFO( 2, 0, CL_DEVICE_QUEUE_ON_DEVICE_PROPERTIES, cl_command_queue_properties),
-    CONFIG_INFO( 2, 0, CL_DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_QUEUE_ON_DEVICE_MAX_SIZE, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_MAX_ON_DEVICE_QUEUES, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_MAX_ON_DEVICE_EVENTS, cl_uint),
-
-    CONFIG_INFO( 2, 0, CL_DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT, cl_uint),
-    CONFIG_INFO( 2, 0, CL_DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT , cl_uint),
-
-    CONFIG_INFO( 2, 0, CL_DEVICE_SVM_CAPABILITIES, cl_device_svm_capabilities),
 };
 
 #define ENTRY(T) { T, #T }
@@ -374,9 +349,6 @@ int getConfigInfo(cl_device_id device, config_info* info)
         case type_string:
             err = clGetDeviceInfo(device, info->opcode, sizeof(info->config.string), &info->config.string, &config_size_ret);
             break;
-        case type_cl_device_svm_capabilities:
-          err = clGetDeviceInfo(device, info->opcode, sizeof(info->config.svmCapabilities), &info->config.svmCapabilities, &config_size_ret);
-          break;
         default:
             log_error("Unknown config type: %d\n", info->config_type);
             break;
@@ -522,21 +494,6 @@ void dumpConfigInfo(cl_device_id device, config_info* info)
         case type_string:
             log_info("\t%s == \"%s\"\n", info->opcode_name, info->config.string);
             break;
-        case type_cl_device_svm_capabilities:
-          log_info("\t%s == %s|%s|%s|%s\n", info->opcode_name,
-            (info->config.svmCapabilities & CL_DEVICE_SVM_COARSE_GRAIN_BUFFER) ? "CL_DEVICE_SVM_COARSE_GRAIN_BUFFER":"",
-            (info->config.svmCapabilities & CL_DEVICE_SVM_FINE_GRAIN_BUFFER) ? "CL_DEVICE_SVM_FINE_GRAIN_BUFFER":"",
-            (info->config.svmCapabilities & CL_DEVICE_SVM_FINE_GRAIN_SYSTEM) ? "CL_DEVICE_SVM_FINE_GRAIN_SYSTEM":"",
-            (info->config.svmCapabilities & CL_DEVICE_SVM_ATOMICS) ? "CL_DEVICE_SVM_ATOMICS":"");
-          {
-            cl_device_svm_capabilities all_svm_capabilities = CL_DEVICE_SVM_COARSE_GRAIN_BUFFER |
-                                                              CL_DEVICE_SVM_FINE_GRAIN_BUFFER |
-                                                              CL_DEVICE_SVM_FINE_GRAIN_SYSTEM |
-                                                              CL_DEVICE_SVM_ATOMICS;
-            if(info->config.svmCapabilities & ~all_svm_capabilities)
-              log_info("WARNING: %s unknown bits found 0x%08llX", info->opcode_name, (info->config.svmCapabilities & ~all_svm_capabilities));
-          }
-          break;
     }
 }
 
@@ -596,14 +553,6 @@ int parseVersion( char const * str, version_t * version )
     rc = 0;
   } else if ( strncmp( str, "OpenCL 1.1", 10 ) == 0 && ( str[ 10 ] == 0 || str[ 10 ] == ' ' ) ) {
     version->major = 1;
-    version->minor = 1;
-    rc = 0;
-  } else if ( strncmp( str, "OpenCL 2.0", 10 ) == 0 && ( str[ 10 ] == 0 || str[ 10 ] == ' ' ) ) {
-    version->major = 2;
-    version->minor = 0;
-    rc = 0;
-  } else if ( strncmp( str, "OpenCL 2.1", 10 ) == 0 && ( str[ 10 ] == 0 || str[ 10 ] == ' ' ) ) {
-    version->major = 2;
     version->minor = 1;
     rc = 0;
   } else {

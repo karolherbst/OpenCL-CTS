@@ -114,10 +114,6 @@ basefn    basefn_list[] = {
     test_get_image1d_info,
     test_get_image1d_array_info,
     test_get_image2d_array_info,
-    test_queue_hint,
-    test_sub_group_dispatch,
-    test_clone_kernel,
-    test_zero_sized_enqueue
 };
 
 
@@ -205,10 +201,6 @@ const char    *basefn_names[] = {
     "get_image1d_info",
     "get_image1d_array_info",
     "get_image2d_array_info",
-    "queue_hint",
-    "sub_group_dispatch",
-    "clone_kernel",
-    "zero_sized_enqueue",
 };
 
 ct_assert((sizeof(basefn_names) / sizeof(basefn_names[0])) == (sizeof(basefn_list) / sizeof(basefn_list[0])));

@@ -41,15 +41,8 @@ add_subdirectory( select )
 add_subdirectory( thread_dimensions )
 add_subdirectory( vec_align )
 add_subdirectory( vec_step )
-add_subdirectory( c11_atomics )
-add_subdirectory( device_execution )
-add_subdirectory( non_uniform_work_group )
-add_subdirectory( SVM )
-add_subdirectory( generic_address_space )
-add_subdirectory( subgroups )
 add_subdirectory( workgroups )
-add_subdirectory( pipes )
-add_subdirectory( device_timer )
+add_subdirectory( SVM )
 
 set(CSV_FILES
     opencl_conformance_tests_21_full_spirv.csv
