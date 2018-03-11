@@ -16,9 +16,6 @@
 #ifndef _kernelHelpers_h
 #define _kernelHelpers_h
 
-// Configuration
-#include "../config.hpp"
-
 #include "compat.h"
 
 #include <stdio.h>
@@ -63,37 +60,27 @@ extern "C" {
 const int MAX_LEN_FOR_KERNEL_LIST = 20;
 
 /* Helper that creates a single program and kernel from a single-kernel program source */
-extern int create_single_kernel_helper(cl_context context, 
+extern int create_single_kernel_helper(cl_context context,
                                        cl_program *outProgram,
                                        cl_kernel *outKernel,
                                        unsigned int numKernelLines,
                                        const char **kernelProgram,
                                        const char *kernelName,
-                                       const char *buildOptions = NULL,
-                                       const bool openclCXX = false);
+                                       const char *buildOptions = NULL);
 
-extern int create_single_kernel_helper_with_build_options(cl_context context, 
+extern int create_single_kernel_helper_with_build_options(cl_context context,
                                                           cl_program *outProgram,
                                                           cl_kernel *outKernel,
                                                           unsigned int numKernelLines,
                                                           const char **kernelProgram,
                                                           const char *kernelName,
-                                                          const char *buildOptions,
-                                                          const bool openclCXX = false);
+                                                          const char *buildOptions);
 
-extern int create_single_kernel_helper_create_program(cl_context context, 
+extern int create_single_kernel_helper_create_program(cl_context context,
                                                       cl_program *outProgram,
                                                       unsigned int numKernelLines,
                                                       const char **kernelProgram,
-                                                      const char *buildOptions = NULL,
-                                                      const bool openclCXX = false);
-                                                      
-/* Creates OpenCL C++ program. This one must be used for creating OpenCL C++ program. */
-extern int create_openclcpp_program(cl_context context, 
-                                    cl_program *outProgram,
-                                    unsigned int numKernelLines,
-                                    const char **kernelProgram,
-                                    const char *buildOptions = NULL);
+                                                      const char *buildOptions = NULL);
 
 /* Builds program (outProgram) and creates one kernel */
 int build_program_create_kernel_helper(cl_context context,

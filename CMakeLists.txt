@@ -9,7 +9,7 @@ else(CMAKE_BUILD_TYPE STREQUAL "release")
     set (BUILD_FLAVOR "debug")
 endif(CMAKE_BUILD_TYPE STREQUAL "release")
 
-set(CLConform_VERSION_MAJOR "2")
+set(CLConform_VERSION_MAJOR "1")
 set(CLConform_VERSION_MINOR "2")
 set(CLConform_VERSION_MICRO "0")
 set(CLConform_VERSION_EXTRA "")
@@ -19,8 +19,6 @@ set(CLConform_VERSION_FULL
 
 cmake_minimum_required(VERSION 2.8)
 
-add_definitions(-DCL_USE_DEPRECATED_OPENCL_2_1_APIS=1)
-add_definitions(-DCL_USE_DEPRECATED_OPENCL_2_0_APIS=1)
 add_definitions(-DCL_USE_DEPRECATED_OPENCL_1_2_APIS=1)
 add_definitions(-DCL_USE_DEPRECATED_OPENCL_1_1_APIS=1)
 add_definitions(-DCL_USE_DEPRECATED_OPENCL_1_0_APIS=1)
@@ -64,59 +62,15 @@ if(USE_VENDOR_CUSTOM_FILE)
     include(CMakeVendor.txt OPTIONAL)
 endif(USE_VENDOR_CUSTOM_FILE)
 
-#-----------------------------------------------------------
-# Development options for OpenCL C++ tests
-#-----------------------------------------------------------
-# Use OpenCL C kernels instead of OpenCL C++ kernels
-option(CLPP_DEVELOPMENT_USE_OPENCLC_KERNELS "Use OpenCL C kernels in OpenCL C++ tests" OFF)
-if(CLPP_DEVELOPMENT_USE_OPENCLC_KERNELS)
-  set(CLPP_DEVELOPMENT_OPTIONS ${CLPP_DEVELOPMENT_OPTIONS} -DCLPP_DEVELOPMENT_USE_OPENCLC_KERNELS)
-endif(CLPP_DEVELOPMENT_USE_OPENCLC_KERNELS)
-# Only check if OpenCL C++ kernels compile to SPIR-V
-option(CLPP_DEVELOPMENT_ONLY_SPIRV_COMPILATION "Only check if OpenCL C++ kernels compile to SPIR-V" OFF)
-if(CLPP_DEVELOPMENT_ONLY_SPIRV_COMPILATION)
-  if(CLPP_DEVELOPMENT_USE_OPENCLC_KERNELS)
-    message(FATAL_ERROR "Can't use OpenCL C kernels and compile to SPIR-V.")
-  endif(CLPP_DEVELOPMENT_USE_OPENCLC_KERNELS)
-  set(CLPP_DEVELOPMENT_OPTIONS ${CLPP_DEVELOPMENT_OPTIONS} -DCLPP_DEVELOPMENT_ONLY_SPIRV_COMPILATION)
-endif(CLPP_DEVELOPMENT_ONLY_SPIRV_COMPILATION)
-#
-if(CLPP_DEVELOPMENT_OPTIONS)
-  add_definitions(-DCLPP_DEVELOPMENT_OPTIONS)
-  add_definitions(${CLPP_DEVELOPMENT_OPTIONS})
-endif(CLPP_DEVELOPMENT_OPTIONS)
-
-# Offline OpenCL C/C++ compiler provided by Khronos is the only supported
-# offline compiler.
-#
-# Path to offline OpenCL C/C++ compiler provided by Khronos.
-# See https://github.com/KhronosGroup/SPIR/ (spirv-1.1 branch or newer SPIR-V-ready
-# branch should be used).
-if(CL_OFFLINE_COMPILER)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DCL_OFFLINE_COMPILER=${CL_OFFLINE_COMPILER}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCL_OFFLINE_COMPILER=${CL_OFFLINE_COMPILER}")
-    # Additional OpenCL C/C++ compiler option.
-    if(CL_OFFLINE_COMPILER_OPTIONS)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DCL_OFFLINE_COMPILER_OPTIONS=${CL_OFFLINE_COMPILER_OPTIONS}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCL_OFFLINE_COMPILER_OPTIONS=${CL_OFFLINE_COMPILER_OPTIONS}")
-    endif(CL_OFFLINE_COMPILER_OPTIONS)
-else(CL_OFFLINE_COMPILER)
-    message(STATUS "OpenCL C/C++ compiler hasn't been found!")
-    message(FATAL_ERROR "Pass path to OpenCL C/C++ compiler in CL_OFFLINE_COMPILER")
-endif(CL_OFFLINE_COMPILER)
-
-# CL_LIBCLCXX_DIR - path to dir with OpenCL C++ STL (libclcxx)
 # CL_INCLUDE_DIR - path to dir with OpenCL headers
 # CL_LIBCLCXX_DIR - path to dir with OpenCL library
-if(CL_INCLUDE_DIR AND CL_LIB_DIR AND CL_LIBCLCXX_DIR)
+if(CL_INCLUDE_DIR AND CL_LIB_DIR)
     set(OPENCL_INCLUDE_DIR ${CL_INCLUDE_DIR})
     link_directories(${CL_LIB_DIR})
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DCL_LIBCLCXX_DIR=${CL_LIBCLCXX_DIR}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCL_LIBCLCXX_DIR=${CL_LIBCLCXX_DIR}")
-else(CL_INCLUDE_DIR AND CL_LIB_DIR AND CL_LIBCLCXX_DIR)
+else(CL_INCLUDE_DIR AND CL_LIB_DIR)
     message(STATUS "OpenCL hasn't been found!")
-    message(FATAL_ERROR "Either install OpenCL or pass -DCL_INCLUDE_DIR, -DCL_LIB_DIR and -DCL_LIBCLCXX_DIR")
-endif(CL_INCLUDE_DIR AND CL_LIB_DIR AND CL_LIBCLCXX_DIR)
+    message(FATAL_ERROR "Either install OpenCL or pass -DCL_INCLUDE_DIR and -DCL_LIB_DIR")
+endif(CL_INCLUDE_DIR AND CL_LIB_DIR)
 
 include(CheckFunctionExists)
 include(CheckIncludeFiles)

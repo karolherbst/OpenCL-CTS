@@ -72,398 +72,22 @@ std::vector<char> get_file_content(const std::string &fileName)
     return content;
 }
 
-std::string get_kernel_name(const std::string &source)
-{
-    cl_uint crc = 0;
-
-    // Count CRC
-    for (cl_uint i = 0; i < source.size() - source.size() % sizeof(cl_uint); i += sizeof(cl_uint))
-    {
-        cl_uint *ptr = (cl_uint *)&source[i];
-        crc += *ptr;
-    }
-    cl_uint remainder = 0;
-    memcpy(&remainder, &source[0] + source.size() - source.size() % sizeof(cl_uint), source.size() % sizeof(cl_uint));
-    crc += remainder;
-
-    // Create list of kernel names
-    std::string kernelsList;
-    size_t kPos = source.find("kernel");
-    while (kPos != std::string::npos)
-    {
-        // check for '__kernel'
-        size_t pos = kPos;
-        if (pos >= 2 && source[pos - 1] == '_' && source[pos - 2] == '_')
-            pos -= 2;
-
-        //check character before 'kernel' (white space expected)
-        size_t wsPos = source.find_last_of(" \t\r\n", pos);
-        if (wsPos == std::string::npos || wsPos + 1 == pos)
-        {
-            //check character after 'kernel' (white space expected)
-            size_t akPos = kPos + sizeof("kernel") - 1;
-            wsPos = source.find_first_of(" \t\r\n", akPos);
-            if (!(wsPos == akPos))
-            {
-                kPos = source.find("kernel", kPos + 1);
-                continue;
-            }
-
-            bool attributeFound;
-            do
-            {
-                attributeFound = false;
-                // find '(' after kernel name name
-                size_t pPos = source.find("(", akPos);
-                if (!(pPos != std::string::npos))
-                    continue;
-
-                // check for not empty kernel name before '('
-                pos = source.find_last_not_of(" \t\r\n", pPos - 1);
-                if (!(pos != std::string::npos && pos > akPos))
-                    continue;
-
-                //find character before kernel name
-                wsPos = source.find_last_of(" \t\r\n", pos);
-                if (!(wsPos != std::string::npos && wsPos >= akPos))
-                    continue;
-
-                std::string name = source.substr(wsPos + 1, pos + 1 - (wsPos + 1));
-                //check for kernel attribute
-                if (name == "__attribute__")
-                {
-                    attributeFound = true;
-                    int pCount = 1;
-                    akPos = pPos + 1;
-                    while (pCount > 0 && akPos != std::string::npos)
-                    {
-                        akPos = source.find_first_of("()", akPos + 1);
-                        if (akPos != std::string::npos)
-                        {
-                            if (source[akPos] == '(')
-                                pCount++;
-                            else
-                                pCount--;
-                        }
-                    }
-                }
-                else
-                {
-                    kernelsList += name + ".";
-                }
-            } while (attributeFound);
-        }
-        kPos = source.find("kernel", kPos + 1);
-    }
-    std::ostringstream oss;
-    if (MAX_LEN_FOR_KERNEL_LIST > 0)
-    {
-        if (kernelsList.size() > MAX_LEN_FOR_KERNEL_LIST + 1)
-        {
-            kernelsList = kernelsList.substr(0, MAX_LEN_FOR_KERNEL_LIST + 1);
-            kernelsList[kernelsList.size() - 1] = '.';
-            kernelsList[kernelsList.size() - 1] = '.';
-        }
-        oss << kernelsList;
-    }
-    oss << std::hex << std::setfill('0') << std::setw(8) << crc;
-    return oss.str();
-}
-
-std::string add_build_options(const std::string &baseName, const char *options)
-{
-    if (options == 0 || options[0] == 0)
-        return get_file_name(baseName, 0, "");
-
-    bool equal = false;
-    int i = 0;
-
-    do
-    {
-        i++;
-        std::string fileName = gSpirVPath + slash + get_file_name(baseName, i, ".options");
-        long fileSize = get_file_size(fileName);
-        if (fileSize == 0)
-            break;
-        //if(fileSize == strlen(options))
-        {
-            std::vector<char> options2 = get_file_content(fileName);
-            options2.push_back(0); //terminate string
-            equal = strcmp(options, &options2[0]) == 0;
-        }
-    } while (!equal);
-    if (equal)
-        return get_file_name(baseName, i, "");
-
-    std::string fileName = gSpirVPath + slash + get_file_name(baseName, i, ".options");
-    std::ofstream ofs(fileName.c_str(), std::ios::binary);
-    if (!ofs.good())
-    {
-        log_info("OfflineCompiler: can't create options: %s\n", fileName.c_str());
-        return "";
-    }
-    // write data as a block:
-    ofs.write(options, strlen(options));
-    log_info("OfflineCompiler: options added: %s\n", fileName.c_str());
-    return get_file_name(baseName, i, "");
-}
-
 int create_single_kernel_helper_create_program(cl_context context,
                                                cl_program *outProgram,
                                                unsigned int numKernelLines,
                                                const char **kernelProgram,
-                                               const char *buildOptions,
-                                               const bool openclCXX)
+                                               const char *buildOptions)
 {
     int error = CL_SUCCESS;
     std::string modifiedKernelStr;
     const char* modifiedKernelCode;
 
-    if (gOfflineCompiler)
+    /* Create the program object from source */
+    *outProgram = clCreateProgramWithSource(context, numKernelLines, kernelProgram, NULL, &error);
+    if (*outProgram == NULL || error != CL_SUCCESS)
     {
-        #ifndef CL_OFFLINE_COMPILER
-            log_error("Offline compilation is not possible: CL_OFFLINE_COMPILER was not defined.\n");
-            return -1;
-        #endif // !CL_OFFLINE_COMPILER
-
-        std::string kernel;
-        for (size_t i = 0; i < numKernelLines; ++i)
-        {
-            std::string chunk(kernelProgram[i], 0, std::string::npos);
-            kernel += chunk;
-        }
-
-        std::string kernelName = get_kernel_name(kernel);
-
-        // set build options
-        std::string bOptions;
-        bOptions += buildOptions ? std::string(buildOptions) : "";
-
-        kernelName = add_build_options(kernelName, buildOptions);
-
-        std::string gOfflineCompilerInput = gSpirVPath + slash + kernelName + ".cl";
-        std::string gOfflineCompilerOutput = gSpirVPath + slash + kernelName;
-
-        // Get device CL_DEVICE_ADDRESS_BITS
-        cl_uint device_address_space_size = 0;
-        if (gOfflineCompilerOutputType == kSpir_v)
-        {
-            cl_device_id device;
-            cl_uint numDevices = 0;
-            cl_int error = clGetContextInfo(context, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &numDevices, 0);
-            if (error != CL_SUCCESS)
-            {
-                print_error(error, "clGetContextInfo failed");
-                return error;
-            }
-
-            std::vector<cl_device_id> devices(numDevices, 0);
-            error = clGetContextInfo(context, CL_CONTEXT_DEVICES, numDevices*sizeof(cl_device_id), &devices[0], 0);
-            if (error != CL_SUCCESS)
-            {
-                print_error(error, "clGetContextInfo failed");
-                return error;
-            }
-
-            error = clGetContextInfo(context, CL_CONTEXT_DEVICES, numDevices*sizeof(cl_device_id), &devices[0], NULL);
-            if (error != CL_SUCCESS)
-            {
-                print_error(error, "clGetContextInfo failed");
-                return error;
-            }
-
-            if ((0 == device_address_space_size) && ((error = clGetDeviceInfo(devices[0], CL_DEVICE_ADDRESS_BITS, sizeof(cl_uint), &device_address_space_size, NULL))))
-            {
-                print_error(error, "Unable to obtain device address bits");
-                return -1;
-            }
-
-            if (device_address_space_size == 32)
-            {
-                gOfflineCompilerOutput += ".spv32";
-            }
-            else if (device_address_space_size == 64)
-            {
-                gOfflineCompilerOutput += ".spv64";
-            }
-        }
-
-        // try to read cached output file when test is run with gForceSpirVGenerate = false
-        std::ifstream ifs(gOfflineCompilerOutput.c_str(), std::ios::binary);
-        if (!ifs.good() || gForceSpirVGenerate)
-        {
-            if (gForceSpirVCache)
-            {
-                log_info("OfflineCompiler: can't open cached SpirV file: %s\n", gOfflineCompilerOutput.c_str());
-                return -1;
-            }
-
-            ifs.close();
-
-            if (!gForceSpirVGenerate)
-                log_info("OfflineCompiler: can't find cached SpirV file: %s\n", gOfflineCompilerOutput.c_str());
-
-            std::ofstream ofs(gOfflineCompilerInput.c_str(), std::ios::binary);
-            if (!ofs.good())
-            {
-                log_info("OfflineCompiler: can't create source file: %s\n", gOfflineCompilerInput.c_str());
-                return -1;
-            }
-
-            // write source to input file
-            ofs.write(kernel.c_str(), kernel.size());
-            ofs.close();
-
-            // Set compiler options
-            // Emit SPIR-V
-            std::string compilerOptions = " -cc1 -emit-spirv";
-            // <triple>: for 32 bit SPIR-V use spir-unknown-unknown, for 64 bit SPIR-V use spir64-unknown-unknown.
-            if(device_address_space_size == 32)
-            {
-                compilerOptions += " -triple=spir-unknown-unknown";
-            }
-            else
-            {
-                compilerOptions += " -triple=spir64-unknown-unknown";
-            }
-            // Set OpenCL C++ flag required by SPIR-V-ready clang (compiler provided by Khronos)
-            if(openclCXX)
-            {
-                compilerOptions = compilerOptions + " -cl-std=c++";
-            }
-            // Set correct includes
-            if(openclCXX)
-            {
-                compilerOptions += " -I ";
-                compilerOptions += STRINGIFY_VALUE(CL_LIBCLCXX_DIR);
-            }
-            else
-            {
-                compilerOptions += " -include opencl.h";
-            }
-
-            #ifdef CL_OFFLINE_COMPILER_OPTIONS
-            compilerOptions += STRINGIFY_VALUE(CL_OFFLINE_COMPILER_OPTIONS);
-            #endif
-
-            // Add build options passed to this function
-            compilerOptions += " " + bOptions;
-            compilerOptions +=
-                " " + gOfflineCompilerInput +
-                " -o " + gOfflineCompilerOutput;
-            std::string runString = STRINGIFY_VALUE(CL_OFFLINE_COMPILER) + compilerOptions;
-
-            // execute script
-            log_info("Executing command: %s\n", runString.c_str());
-            fflush(stdout);
-            int returnCode = system(runString.c_str());
-            if (returnCode != 0)
-            {
-                log_error("ERROR: Command finished with error: 0x%x\n", returnCode);
-                return CL_COMPILE_PROGRAM_FAILURE;
-            }
-            // read output file
-            ifs.open(gOfflineCompilerOutput.c_str(), std::ios::binary);
-            if (!ifs.good())
-            {
-                log_info("OfflineCompiler: can't read output file: %s\n", gOfflineCompilerOutput.c_str());
-                return -1;
-            }
-        }
-
-        // -----------------------------------------------------------------------------------
-        // ------------- ONLY FOR OPENCL 22 CONFORMANCE TEST 22 DEVELOPMENT ------------------
-        // -----------------------------------------------------------------------------------
-        // Only OpenCL C++ to SPIR-V compilation
-        #if defined(DEVELOPMENT) && defined(ONLY_SPIRV_COMPILATION)
-        if(openclCXX)
-        {
-            return CL_SUCCESS;
-        }
-        #endif
-
-        ifs.seekg(0, ifs.end);
-        int length = ifs.tellg();
-        ifs.seekg(0, ifs.beg);
-
-        //treat modifiedProgram as input for clCreateProgramWithSource
-        if (gOfflineCompilerOutputType == kSource)
-        {
-            // read source from file:
-            std::vector<char> modifiedKernelBuf(length);
-
-            ifs.read(&modifiedKernelBuf[0], length);
-            ifs.close();
-
-            for (int i = 0; i < length; i++)
-                modifiedKernelStr.push_back(modifiedKernelBuf[i]);
-
-            modifiedKernelCode = &modifiedKernelStr[0];
-
-            /* Create the program object from source - to be removed in the future as we will use offline compiler here */
-            *outProgram = clCreateProgramWithSource(context, numKernelLines, &modifiedKernelCode, NULL, &error);
-            if (*outProgram == NULL || error != CL_SUCCESS)
-            {
-                print_error(error, "clCreateProgramWithSource failed");
-                return error;
-            }
-        }
-        //treat modifiedProgram as input for clCreateProgramWithBinary
-        else if (gOfflineCompilerOutputType == kBinary)
-        {
-            // read binary from file:
-            std::vector<unsigned char> modifiedKernelBuf(length);
-
-            ifs.read((char *)&modifiedKernelBuf[0], length);
-            ifs.close();
-
-            cl_uint numDevices = 0;
-            cl_int error = clGetContextInfo(context, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &numDevices, 0);
-            test_error(error, "clGetContextInfo failed");
-
-            std::vector<cl_device_id> devices(numDevices, 0);
-            error = clGetContextInfo(context, CL_CONTEXT_DEVICES, numDevices*sizeof(cl_device_id), &devices[0], 0);
-            test_error(error, "clGetContextInfo failed");
-
-            size_t lengths = modifiedKernelBuf.size();
-            const unsigned char *binaries = { &modifiedKernelBuf[0] };
-            log_info("offlineCompiler: clCreateProgramWithSource replaced with clCreateProgramWithBinary\n");
-            *outProgram = clCreateProgramWithBinary(context, 1, &devices[0], &lengths, &binaries, NULL, &error);
-            if (*outProgram == NULL || error != CL_SUCCESS)
-            {
-                print_error(error, "clCreateProgramWithBinary failed");
-                return error;
-            }
-        }
-        //treat modifiedProgram as input for clCreateProgramWithIL
-        else if (gOfflineCompilerOutputType == kSpir_v)
-        {
-            // read spir-v from file:
-            std::vector<unsigned char> modifiedKernelBuf(length);
-
-            ifs.read((char *)&modifiedKernelBuf[0], length);
-            ifs.close();
-
-            size_t length = modifiedKernelBuf.size();
-            log_info("offlineCompiler: clCreateProgramWithSource replaced with clCreateProgramWithIL\n");
-
-            *outProgram = clCreateProgramWithIL(context, &modifiedKernelBuf[0], length, &error);
-            if (*outProgram == NULL || error != CL_SUCCESS)
-            {
-                print_error(error, "clCreateProgramWithIL failed");
-                return error;
-            }
-        }
-    }
-    else // gOfflineCompiler == false
-    {
-        /* Create the program object from source */
-        *outProgram = clCreateProgramWithSource(context, numKernelLines, kernelProgram, NULL, &error);
-        if (*outProgram == NULL || error != CL_SUCCESS)
-        {
-            print_error(error, "clCreateProgramWithSource failed");
-            return error;
-        }
+        print_error(error, "clCreateProgramWithSource failed");
+        return error;
     }
     return 0;
 }
@@ -474,10 +98,9 @@ int create_single_kernel_helper_with_build_options(cl_context context,
                                                    unsigned int numKernelLines,
                                                    const char **kernelProgram,
                                                    const char *kernelName,
-                                                   const char *buildOptions,
-                                                   const bool openclCXX)
+                                                   const char *buildOptions)
 {
-    return create_single_kernel_helper(context, outProgram, outKernel, numKernelLines, kernelProgram, kernelName, buildOptions, openclCXX);
+    return create_single_kernel_helper(context, outProgram, outKernel, numKernelLines, kernelProgram, kernelName, buildOptions);
 }
 
 // Creates and builds OpenCL C/C++ program, and creates a kernel
@@ -487,52 +110,15 @@ int create_single_kernel_helper(cl_context context,
                                 unsigned int numKernelLines,
                                 const char **kernelProgram,
                                 const char *kernelName,
-                                const char *buildOptions,
-                                const bool openclCXX)
+                                const char *buildOptions)
 {
-    int error;
-    // Create OpenCL C++ program
-    if(openclCXX)
+    int error = create_single_kernel_helper_create_program(
+        context, outProgram, numKernelLines, kernelProgram, buildOptions
+    );
+    if (error != CL_SUCCESS)
     {
-    // -----------------------------------------------------------------------------------
-    // ------------- ONLY FOR OPENCL 22 CONFORMANCE TEST 22 DEVELOPMENT ------------------
-    // -----------------------------------------------------------------------------------
-    // Only OpenCL C++ to SPIR-V compilation
-    #if defined(DEVELOPMENT) && defined(ONLY_SPIRV_COMPILATION)
-        // Save global variable
-        bool tempgForceSpirVGenerate = gForceSpirVGenerate;
-        // Force OpenCL C++ -> SPIR-V compilation on every run
-        gForceSpirVGenerate = true;
-    #endif
-        error = create_openclcpp_program(
-            context, outProgram, numKernelLines, kernelProgram, buildOptions
-        );
-        if (error != CL_SUCCESS)
-        {
-            log_error("Create program failed: %d, line: %d\n", error, __LINE__);
-            return error;
-        }
-    // -----------------------------------------------------------------------------------
-    // ------------- ONLY FOR OPENCL 22 CONFORMANCE TEST 22 DEVELOPMENT ------------------
-    // -----------------------------------------------------------------------------------
-    #if defined(DEVELOPMENT) && defined(ONLY_SPIRV_COMPILATION)
-        // Restore global variables
-        gForceSpirVGenerate = tempgForceSpirVGenerate;
-        log_info("WARNING: KERNEL %s WAS ONLY COMPILED TO SPIR-V\n", kernelName);
+        log_error("Create program failed: %d, line: %d\n", error, __LINE__);
         return error;
-    #endif
-    }
-    // Create OpenCL C program
-    else
-    {
-        error = create_single_kernel_helper_create_program(
-            context, outProgram, numKernelLines, kernelProgram, buildOptions
-        );
-        if (error != CL_SUCCESS)
-        {
-            log_error("Create program failed: %d, line: %d\n", error, __LINE__);
-            return error;
-        }
     }
     // Remove offline-compiler-only build options
     std::string newBuildOptions;
@@ -557,31 +143,7 @@ int create_single_kernel_helper(cl_context context,
     );
 }
 
-// Creates OpenCL C++ program
-int create_openclcpp_program(cl_context context,
-                             cl_program *outProgram,
-                             unsigned int numKernelLines,
-                             const char **kernelProgram,
-                             const char *buildOptions)
-{
-    // Save global variables
-    bool tempgOfflineCompiler = gOfflineCompiler;
-    OfflineCompilerOutputType tempgOfflineCompilerOutputType = gOfflineCompilerOutputType;
-    // Force offline compilation to SPIR-V
-    gOfflineCompiler = true;
-    gOfflineCompilerOutputType = OfflineCompilerOutputType::kSpir_v;
-    // Create program
-    int error = create_single_kernel_helper_create_program(
-        context, outProgram, numKernelLines, kernelProgram, buildOptions, true
-    );
-    // Restore global variable
-    gOfflineCompiler = tempgOfflineCompiler;
-    gOfflineCompilerOutputType = tempgOfflineCompilerOutputType;
-    // Return result
-    return error;
-}
-
-// Builds OpenCL C/C++ program and creates
+// Builds OpenCL C program and creates
 int build_program_create_kernel_helper(cl_context context,
                                        cl_program *outProgram,
                                        cl_kernel *outKernel,

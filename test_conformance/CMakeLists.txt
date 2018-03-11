@@ -50,7 +50,6 @@ add_subdirectory( subgroups )
 add_subdirectory( workgroups )
 add_subdirectory( pipes )
 add_subdirectory( device_timer )
-add_subdirectory( clcpp )
 
 set(CSV_FILES
     opencl_conformance_tests_21_full_spirv.csv
