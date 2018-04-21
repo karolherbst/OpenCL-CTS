@@ -270,7 +270,6 @@ int test_waitlists( cl_device_id deviceID, cl_context context, cl_command_queue 
 {
     cl_int error;
     int retVal = 0;
-    cl_queue_properties props[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, 0};
 
     if( !checkDeviceForQueueSupport( deviceID, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE ) )
     {
@@ -278,7 +277,7 @@ int test_waitlists( cl_device_id deviceID, cl_context context, cl_command_queue 
         return 0;
     }
 
-    clCommandQueueWrapper queue = clCreateCommandQueueWithProperties( context, deviceID, &props[0], &error );
+    clCommandQueueWrapper queue = clCreateCommandQueue( context, deviceID, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &error );
     test_error(error, "Unable to create out-of-order queue");
 
     log_info( "\n" );

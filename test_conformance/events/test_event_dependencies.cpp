@@ -128,18 +128,18 @@ int test_event_enqueue_wait_for_events_run_test( cl_device_id deviceID, cl_conte
                 return -1942;
             }
 
-            queueWrappers[0] = clCreateCommandQueueWithProperties(context_to_use, two_device_ids[0], &props[0], &error);
+            queueWrappers[0] = clCreateCommandQueue(context_to_use, two_device_ids[0], CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &error);
             test_error(error, "clCreateCommandQueue for first queue on first device failed.");
-            queueWrappers[1] = clCreateCommandQueueWithProperties(context_to_use, two_device_ids[1], &props[0], &error);
+            queueWrappers[1] = clCreateCommandQueue(context_to_use, two_device_ids[1], CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &error);
             test_error(error, "clCreateCommandQueue for second queue on second device failed.");
 
         }
         else
         {
             // Single device has already been checked for out-of-order exec support
-            queueWrappers[0] = clCreateCommandQueueWithProperties(context_to_use, deviceID, &props[0], &error);
+            queueWrappers[0] = clCreateCommandQueue(context_to_use, deviceID, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &error);
             test_error(error, "clCreateCommandQueue for first queue failed.");
-            queueWrappers[1] = clCreateCommandQueueWithProperties(context_to_use, deviceID, &props[0], &error);
+            queueWrappers[1] = clCreateCommandQueue(context_to_use, deviceID, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &error);
             test_error(error, "clCreateCommandQueue for second queue failed.");
         }
         // Ugly hack to make sure we only have the wrapper auto-release if they are different queues
@@ -151,7 +151,7 @@ int test_event_enqueue_wait_for_events_run_test( cl_device_id deviceID, cl_conte
     {
         // (Note: single device has already been checked for out-of-order exec support)
         // Otherwise create one queue and have the second one be the same
-        queueWrappers[0] = clCreateCommandQueueWithProperties(context_to_use, deviceID, &props[0], &error);
+        queueWrappers[0] = clCreateCommandQueue(context_to_use, deviceID, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &error);
         test_error(error, "clCreateCommandQueue for first queue failed.");
         queues[0] = queueWrappers[0];
         queues[1] = (cl_command_queue)queues[0];

@@ -127,7 +127,7 @@ int interop_user_sync(cl_device_id deviceID, cl_context context, cl_command_queu
       memObjList.push_back(planesList[planeIdx]);
     }
 
-    clCommandQueueWrapper cmdQueue = clCreateCommandQueueWithProperties(ctx, gDeviceIDdetected, 0, &error );
+    clCommandQueueWrapper cmdQueue = clCreateCommandQueue(ctx, gDeviceIDdetected, 0, &error );
     if (error != CL_SUCCESS)
     {
       log_error("Unable to create command queue: %s\n", IGetErrorString(error));

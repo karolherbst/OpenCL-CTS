@@ -212,7 +212,7 @@ int main(int argc, const char *argv[])
     }
 
     // Create a queue against the context
-    queue = clCreateCommandQueueWithProperties( context, device, 0, &error );
+    queue = clCreateCommandQueue( context, device, 0, &error );
   if ( error != CL_SUCCESS )
     {
         print_error( error, "Unable to create testing command queue" );

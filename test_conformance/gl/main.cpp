@@ -39,7 +39,7 @@ static cl_context        sCurrentContext = NULL;
 int redirect_##fn(cl_device_id device, cl_context context, cl_command_queue queue, int numElements )    \
 { \
     int error; \
-    clCommandQueueWrapper realQueue = clCreateCommandQueueWithProperties( sCurrentContext, device, 0, &error ); \
+    clCommandQueueWrapper realQueue = clCreateCommandQueue( sCurrentContext, device, 0, &error ); \
     test_error( error, "Unable to create command queue" );    \
     return fn( device, sCurrentContext, realQueue, numElements ); \
 }

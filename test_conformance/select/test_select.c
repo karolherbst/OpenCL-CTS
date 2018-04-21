@@ -664,7 +664,7 @@ int main(int argc, const char* argv[]) {
     cl_context context = clCreateContext(NULL, 1, &device_id, notify_callback, NULL, NULL);
     checkNull(context, "clCreateContext");
 
-    cl_command_queue queue = clCreateCommandQueueWithProperties(context, device_id, 0, NULL);
+    cl_command_queue queue = clCreateCommandQueue(context, device_id, 0, NULL);
     checkNull(queue, "clCreateCommandQueue");
 
 

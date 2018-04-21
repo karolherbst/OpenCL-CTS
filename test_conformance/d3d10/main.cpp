@@ -387,10 +387,10 @@ bool TestDeviceContextCreate(
 
     // create the command queue
     TestPrint("Creating a command queue.\n");
-    command_queue = clCreateCommandQueueWithProperties(
+    command_queue = clCreateCommandQueue(
         context,
         device,
-        NULL,
+        0,
         &result);
     TestRequire(
         (result == CL_SUCCESS),

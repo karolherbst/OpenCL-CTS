@@ -641,14 +641,12 @@ void CL_CALLBACK notify_callback(const char *errinfo, const void *private_info, 
 // Actual function execution
 int callSingleTestFunction( basefn functionToCall, const char *functionName,
                            cl_device_id deviceToUse, int forceNoContextCreation,
-                           int numElementsToUse, const cl_queue_properties queueProps )
+                           int numElementsToUse, const cl_command_queue_properties queueProps )
 {
     int numErrors = 0, ret;
     cl_int error;
     cl_context context = NULL;
     cl_command_queue queue = NULL;
-    const cl_command_queue_properties cmd_queueProps = (queueProps)?CL_QUEUE_PROPERTIES:0;
-    cl_command_queue_properties queueCreateProps[] = {cmd_queueProps, queueProps, 0};
 
     /* Create a context to work with, unless we're told not to */
     if( !forceNoContextCreation )
@@ -660,7 +658,7 @@ int callSingleTestFunction( basefn functionToCall, const char *functionName,
             return 1;
         }
 
-        queue = clCreateCommandQueueWithProperties( context, deviceToUse, &queueCreateProps[0], &error );
+        queue = clCreateCommandQueue( context, deviceToUse, queueProps, &error );
         if( queue == NULL )
         {
             print_error( error, "Unable to create testing command queue" );

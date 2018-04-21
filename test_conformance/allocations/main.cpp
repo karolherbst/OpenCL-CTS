@@ -81,7 +81,7 @@ int init_cl() {
     test_error(error, "clCreateContext failed");
 
     /* Create command queue */
-    g_queue = clCreateCommandQueueWithProperties( g_context, g_device_id, 0, &error );
+    g_queue = clCreateCommandQueue( g_context, g_device_id, 0, &error );
     test_error(error, "clCreateCommandQueue failed");
 
     return error;

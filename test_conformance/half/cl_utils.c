@@ -174,7 +174,7 @@ int InitCL( void )
         return -1;
     }
 
-    gQueue = clCreateCommandQueueWithProperties(gContext, gDevice, 0, &error);
+    gQueue = clCreateCommandQueue(gContext, gDevice, 0, &error);
     if( NULL == gQueue )
     {
         vlog_error( "clCreateContext failed. (%d)\n", error );

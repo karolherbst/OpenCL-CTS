@@ -281,7 +281,7 @@ int main(int argc, char** argv)
   CL_EXIT_ERROR(err,"CreateContext");
 
   // Create a command queue.
-  q = clCreateCommandQueueWithProperties(context,device_id,0,&err);
+  q = clCreateCommandQueue(context,device_id,0,&err);
   CL_EXIT_ERROR(err,"clCreateCommandQueue failed");
 
   int ret = test_userevents( device_type, context, queue, 0 );

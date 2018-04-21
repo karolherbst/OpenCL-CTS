@@ -76,8 +76,4 @@ set(${MODULE_NAME}_SOURCES
     ../../test_common/harness/parseParameters.cpp
 )
 
-if(APPLE)
-    list(APPEND ${MODULE_NAME}_SOURCES test_queue_priority.c)
-endif(APPLE)
-
 include(../CMakeCommon.txt)

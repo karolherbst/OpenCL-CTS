@@ -52,7 +52,6 @@ SRCS = main.c \
 		test_kernel_memory_alignment.cpp \
 		test_global_work_offsets.cpp \
 		test_simple_image_pitch.c \
-		test_queue_priority.c \
 		test_global_linear_id.c \
 		test_local_linear_id.c \
 		test_enqueued_local_size.c \

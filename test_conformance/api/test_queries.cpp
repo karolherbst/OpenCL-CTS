@@ -231,14 +231,11 @@ int test_get_command_queue_info(cl_device_id deviceID, cl_context context, cl_co
     int error;
     size_t size;
 
-    cl_queue_properties device_props;
-    cl_queue_properties queue_props[] = {CL_QUEUE_PROPERTIES,0,0};
-
-    clGetDeviceInfo(deviceID, CL_DEVICE_QUEUE_ON_HOST_PROPERTIES, sizeof(device_props), &device_props, NULL);
+    cl_command_queue_properties device_props;
+    clGetDeviceInfo(deviceID, CL_DEVICE_QUEUE_PROPERTIES, sizeof(device_props), &device_props, NULL);
     log_info("CL_DEVICE_QUEUE_ON_HOST_PROPERTIES is %d\n", (int)device_props);
 
-    queue_props[1] = device_props;
-    clCommandQueueWrapper queue = clCreateCommandQueueWithProperties( context, deviceID, &queue_props[0], &error );
+    clCommandQueueWrapper queue = clCreateCommandQueue( context, deviceID, device_props, &error );
     test_error( error, "Unable to create command queue to test with" );
 
     cl_uint refCount;
