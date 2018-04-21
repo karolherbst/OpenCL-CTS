@@ -41,14 +41,9 @@ add_subdirectory( select )
 add_subdirectory( thread_dimensions )
 add_subdirectory( vec_align )
 add_subdirectory( vec_step )
-add_subdirectory( workgroups )
 add_subdirectory( SVM )
 
 set(CSV_FILES
-    opencl_conformance_tests_21_full_spirv.csv
-    opencl_conformance_tests_21_legacy_wimpy.csv
-    opencl_conformance_tests_22.csv
-    opencl_conformance_tests_generate_spirv.csv
     opencl_conformance_tests_conversions.csv
     opencl_conformance_tests_d3d.csv
     opencl_conformance_tests_full.csv

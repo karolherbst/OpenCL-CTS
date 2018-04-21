@@ -90,23 +90,6 @@ Math,math_brute_force/bruteforce
 Integer Ops,integer_ops/test_integer_ops
 Half Ops,half/test_half
 
-# #########################################
-# Compatibility with Previous Versions
-# #########################################
-Basic 1.2,compatibility/test_conformance/basic/test_basic
-API 1.2,compatibility/test_conformance/api/test_api
-
-#####################################
-# OpenCL 2.0 tests
-#####################################
-C11 Atomics,c11_atomics/test_c11_atomics
-Execution Model,device_execution/test_device_execution
-Generic Address Space,generic_address_space/test_generic_address_space
-Non Uniform Work Groups,non_uniform_work_group/test_non_uniform_work_group
-Pipes,pipes/test_pipes
-SVM,SVM/test_SVM
-Workgroups,workgroups/test_workgroups
-
 #########################################
 # Extensions
 #########################################
@@ -114,4 +97,3 @@ SPIR,spir/test_spir
 Mipmaps (Kernel),images/kernel_read_write/test_image_streams test_mipmaps CL_FILTER_NEAREST
 Mipmaps (clCopyImage),images/clCopyImage/test_cl_copy_images test_mipmaps
 Mipmaps (clReadWriteImage),images/clReadWriteImage/test_cl_read_write_images test_mipmaps
-Subgroups,subgroups/test_subgroups
