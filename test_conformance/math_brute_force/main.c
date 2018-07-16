@@ -1295,7 +1295,7 @@ int MakeKernel( const char **c, cl_uint count, const char *name, cl_kernel *k, c
     int error = 0;
     char options[200];
 
-    strcpy(options, "-cl-std=CL2.0");
+    strcpy(options, "-cl-std=CL1.2");
 
     if( gForceFTZ )
     {
