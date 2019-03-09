@@ -144,8 +144,8 @@ basefn    basefn_list[] = {
     test_global_work_offsets,
     test_get_global_offset,
 
-    test_global_linear_id,
-    test_local_linear_id,
+//    test_global_linear_id,
+//    test_local_linear_id,
     test_enqueued_local_size,
 
     test_simple_read_image_pitch,
@@ -155,7 +155,7 @@ basefn    basefn_list[] = {
     test_queue_priority,
 #endif
 
-    test_get_linear_ids,
+//    test_get_linear_ids,
     test_rw_image_access_qualifier
 };
 
@@ -274,8 +274,8 @@ const char    *basefn_names[] = {
     "global_work_offsets",
     "get_global_offset",
 
-    "global_linear_id",
-    "local_linear_id",
+//    "global_linear_id",
+//    "local_linear_id",
     "enqueued_local_size",
 
     "simple_read_image_pitch",
@@ -285,7 +285,7 @@ const char    *basefn_names[] = {
     "queue_priority",
 #endif
 
-    "get_linear_ids",
+//    "get_linear_ids",
     "test_rw_image_access_qualifier",
 };
 
