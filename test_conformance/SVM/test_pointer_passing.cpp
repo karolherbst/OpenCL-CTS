@@ -89,6 +89,8 @@ int test_svm_pointer_passing(cl_device_id deviceID, cl_context context2, cl_comm
         error = clEnqueueNDRangeKernel(cmdq, kernel_verify_char, 1, NULL, &bufSize, NULL, 0, NULL, NULL);
         test_error(error,"clEnqueueNDRangeKernel failed");
 
+        clFinish(cmdq);
+
         pNumCorrect = (cl_int*) clEnqueueMapBuffer(cmdq, num_correct, CL_TRUE, CL_MAP_READ | CL_MAP_WRITE, 0, sizeof(cl_int), 0, NULL,NULL, &error);
         test_error2(error, pNumCorrect, "clEnqueueMapBuffer failed");
         cl_int correct_count = *pNumCorrect;
