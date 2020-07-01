@@ -286,7 +286,7 @@ if len(sys.argv) < 2:
     write_help_info()
     sys.exit(-1)
 
-current_directory = os.getcwd()
+current_directory = "/home/kherbst/git/OpenCL-CTS/build/test_conformance"
 # Open the log file
 for arg in sys.argv:
     match = re.search("log=(\S+)", arg)
