@@ -787,6 +787,9 @@ int parseAndCallCommandLineTests(int argc, const char *argv[],
 
     free(selectedTestList);
 
+    if (ret == EXIT_SUCCESS && (gFailCount || gTestsFailed))
+        ret = EXIT_FAILURE;
+
     return ret;
 }
 
