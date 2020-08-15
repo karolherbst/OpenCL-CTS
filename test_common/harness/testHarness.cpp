@@ -665,6 +665,9 @@ int parseAndCallCommandLineTests( int argc, const char *argv[], cl_device_id dev
     free( selectedTestList );
     free( resultTestList );
 
+    if (ret == EXIT_SUCCESS && (gFailCount || gTestsFailed))
+        ret = EXIT_FAILURE;
+
     return ret;
 }
 
