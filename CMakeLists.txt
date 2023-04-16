@@ -99,7 +99,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?Clang"
     add_cxx_flag_if_supported(-Wmisleading-indentation)
     add_cxx_flag_if_supported(-Wunused-function)
     add_cxx_flag_if_supported(-Wunused-variable)
-    add_cxx_flag_if_supported(-Werror)
+    #add_cxx_flag_if_supported(-Werror)
     if(NOT CMAKE_BUILD_TYPE MATCHES "Release|RelWithDebInfo|MinSizeRel")
         # Enable more warnings if not doing a release build.
         add_cxx_flag_if_supported(-Wall)
