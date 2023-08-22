@@ -73,7 +73,7 @@ int create_kernel(ExplicitType type, int output_size, char *program,
 
     program[0] = '\0';
     sprintf(program,
-            "%s\n__kernel void test_vector_creation(__global %s *src, __global "
+            "%s\n__kernel void test_vector_creation(__constant %s *src, __global "
             "%s%s *result) {\n",
             extension, get_explicit_type_name(type),
             get_explicit_type_name(type),
