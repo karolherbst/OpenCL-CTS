@@ -25,7 +25,7 @@ extern cl_half_rounding_mode halfRoundingMode;
 #define DEBUG 0
 #define DEPTH 16
 // Limit the maximum code size for any given kernel.
-#define MAX_CODE_SIZE (1024 * 32)
+#define MAX_CODE_SIZE (1024 * 4)
 
 static const int sizes[] = { 1, 2, 3, 4, 8, 16, -1, -1, -1, -1 };
 static const int initial_no_sizes[] = { 0, 0, 0, 0, 0, 0, 2 };
