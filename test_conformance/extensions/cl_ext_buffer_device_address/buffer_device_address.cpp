@@ -137,7 +137,7 @@ private:
     cl_mem_properties address_type;
 
     int check_device_address_from_api(cl_mem buf,
-                                      cl_mem_device_address_EXT &Addr)
+                                      cl_mem_device_address_ext &Addr)
     {
         Addr = 0;
         cl_int error = clGetMemObjectInfo(buf, CL_MEM_DEVICE_ADDRESS_EXT,
@@ -164,7 +164,7 @@ private:
     {
         cl_int error = 0;
         cl_ulong DeviceAddrFromKernel = 0;
-        cl_mem_device_address_EXT DeviceAddrFromAPI = 0;
+        cl_mem_device_address_ext DeviceAddrFromAPI = 0;
 
         for (int i = 0; i < BUF_SIZE; ++i)
         {
@@ -232,7 +232,7 @@ private:
                              clKernelWrapper &ind_access_kernel)
     {
         cl_int error = 0;
-        cl_mem_device_address_EXT DeviceAddrFromAPI = 0;
+        cl_mem_device_address_ext DeviceAddrFromAPI = 0;
 
         int DataIn = 0x12348765;
         int DataOut = -1;
@@ -306,7 +306,7 @@ private:
                             clKernelWrapper &ptr_arith_kernel)
     {
         cl_int error = 0;
-        cl_mem_device_address_EXT DeviceAddrFromAPI = 0;
+        cl_mem_device_address_ext DeviceAddrFromAPI = 0;
         int DataOut = -1;
         int DataIn = 0x12348765;
 
@@ -331,7 +331,7 @@ private:
 
             error = clSetKernelArgDevicePointer(
                 ptr_arith_kernel, 0,
-                (cl_mem_device_address_EXT)(((cl_uint *)DeviceAddrFromAPI)
+                (cl_mem_device_address_ext)(((cl_uint *)DeviceAddrFromAPI)
                                             + 2));
         test_error_fail(error, "clSetKernelArgDevicePointer failed\n");
         error = clSetKernelArg(ptr_arith_kernel, 1, sizeof(cl_mem),
