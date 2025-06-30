@@ -656,7 +656,7 @@ static int test_feature_macro_integer_dot_product_input_4x8bit(
                                         compiler_status, supported);
 }
 
-static int test_feature_macro_image_unorm_int_2_101010(
+static int test_feature_macro_ext_image_unorm_int_2_101010(
     cl_device_id deviceID, cl_context context, std::string test_macro_name,
     cl_bool& supported)
 {
@@ -859,7 +859,7 @@ REGISTER_TEST_VERSION(features_macro, Version(3, 0))
     NEW_FEATURE_MACRO_TEST(int64);
     NEW_FEATURE_MACRO_TEST(integer_dot_product_input_4x8bit);
     NEW_FEATURE_MACRO_TEST(integer_dot_product_input_4x8bit_packed);
-    NEW_FEATURE_MACRO_TEST(image_unorm_int_2_101010);
+    NEW_FEATURE_MACRO_TEST(ext_image_unorm_int_2_101010);
 
     error |= test_consistency_c_features_list(device, supported_features_vec);
 
