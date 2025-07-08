@@ -30,6 +30,8 @@
 #include <OpenCL/cl.h>
 #endif
 
+#include <sys/resource.h>
+
 #include "harness/testHarness.h"
 #include "harness/parseParameters.h"
 
@@ -148,6 +150,12 @@ void parseParams(int &argc, const char *argv[])
 
 int main(int argc, const char *argv[])
 {
+    struct rlimit limits;
+    getrlimit(RLIMIT_NOFILE, &limits);
+    if (limits.rlim_cur <= 2048) {
+        limits.rlim_cur = 2048;
+        setrlimit(RLIMIT_NOFILE, &limits);
+    }
     test_start();
 
     cl_device_type requestedDeviceType = CL_DEVICE_TYPE_GPU;

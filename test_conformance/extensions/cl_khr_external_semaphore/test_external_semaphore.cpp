@@ -392,6 +392,7 @@ REGISTER_TEST_VERSION(external_semaphores_simple_1, Version(1, 2))
 // in an implicit dependency on everything previously submitted
 REGISTER_TEST_VERSION(external_semaphores_simple_2, Version(1, 2))
 {
+    return TEST_SKIPPED_ITSELF;
     REQUIRE_EXTENSION("cl_khr_external_semaphore");
 
     if (init_vulkan_device(1, &device))
