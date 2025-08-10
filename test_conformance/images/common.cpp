@@ -207,14 +207,14 @@ clMemWrapper create_image(cl_context context, cl_command_queue queue,
             if (gDebugTrace)
                 log_info(" - Creating 1D image %d ...\n",
                          (int)imageInfo->width);
-            if (enable_pitch) host_ptr = malloc(imageInfo->rowPitch);
+            if (enable_pitch) host_ptr = aligned_alloc(0x1000, imageInfo->rowPitch);
             break;
         case CL_MEM_OBJECT_IMAGE2D:
             if (gDebugTrace)
                 log_info(" - Creating 2D image %d by %d ...\n",
                          (int)imageInfo->width, (int)imageInfo->height);
             if (enable_pitch)
-                host_ptr = malloc(imageInfo->height * imageInfo->rowPitch);
+                host_ptr = aligned_alloc(0x1000, imageInfo->height * imageInfo->rowPitch);
             break;
         case CL_MEM_OBJECT_IMAGE3D:
             if (gDebugTrace)
@@ -222,14 +222,14 @@ clMemWrapper create_image(cl_context context, cl_command_queue queue,
                          (int)imageInfo->width, (int)imageInfo->height,
                          (int)imageInfo->depth);
             if (enable_pitch)
-                host_ptr = malloc(imageInfo->depth * imageInfo->slicePitch);
+                host_ptr = aligned_alloc(0x1000, imageInfo->depth * imageInfo->slicePitch);
             break;
         case CL_MEM_OBJECT_IMAGE1D_ARRAY:
             if (gDebugTrace)
                 log_info(" - Creating 1D image array %d by %d...\n",
                          (int)imageInfo->width, (int)imageInfo->arraySize);
             if (enable_pitch)
-                host_ptr = malloc(imageInfo->arraySize * imageInfo->slicePitch);
+                host_ptr = aligned_alloc(0x1000, imageInfo->arraySize * imageInfo->slicePitch);
             break;
         case CL_MEM_OBJECT_IMAGE2D_ARRAY:
             if (gDebugTrace)
@@ -237,7 +237,7 @@ clMemWrapper create_image(cl_context context, cl_command_queue queue,
                          (int)imageInfo->width, (int)imageInfo->height,
                          (int)imageInfo->arraySize);
             if (enable_pitch)
-                host_ptr = malloc(imageInfo->arraySize * imageInfo->slicePitch);
+                host_ptr = aligned_alloc(0x1000, imageInfo->arraySize * imageInfo->slicePitch);
             break;
         case CL_MEM_OBJECT_IMAGE1D_BUFFER:
             if (gDebugTrace)
@@ -250,7 +250,7 @@ clMemWrapper create_image(cl_context context, cl_command_queue queue,
                 {
                     if (version.major() == 1)
                     {
-                        host_ptr = malloc(imageInfo->rowPitch);
+                        host_ptr = aligned_alloc(0x1000, imageInfo->rowPitch);
                     }
                     else
                     {
