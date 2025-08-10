@@ -808,7 +808,7 @@ REGISTER_TEST(buffer_write_struct)
     int         total_errors = 0;
     MTdata      d = init_genrand( gRandomSeed );
 
-    size_t      min_alignment = get_min_alignment(context);
+    size_t      min_alignment = std::max((size_t)0x1000, get_min_alignment(context));
 
     global_work_size[0] = (size_t)num_elements;
 
